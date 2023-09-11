@@ -75,7 +75,12 @@ class LiveKitWebSocketIO extends LiveKitWebSocket {
   ]) async {
     logger.fine('[WebSocketIO] Connecting(uri: ${uri.toString()})...');
     try {
-      final ws = await io.WebSocket.connect(uri.toString());
+      final client = io.HttpClient();
+
+      client.badCertificateCallback = (cert, host, port) => true;
+
+      final ws =
+          await io.WebSocket.connect(uri.toString(), customClient: client);
       logger.fine('[WebSocketIO] Connected');
       return LiveKitWebSocketIO._(ws, options);
     } catch (_) {
