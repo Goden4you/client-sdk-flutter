@@ -75,9 +75,12 @@ class LiveKitWebSocketIO extends LiveKitWebSocket {
   ]) async {
     logger.fine('[WebSocketIO] Connecting(uri: ${uri.toString()})...');
     try {
-      final client = io.HttpClient();
-
-      client.badCertificateCallback = (cert, host, port) => true;
+      final client = io.HttpClient()
+        ..badCertificateCallback = (cert, host, port) {
+          logger.fine('[WebSocketIO] Bad Certificate Callback');
+          return true;
+        };
+      logger.fine('[WebSocketIO] Start Connecting...');
 
       final ws =
           await io.WebSocket.connect(uri.toString(), customClient: client);
